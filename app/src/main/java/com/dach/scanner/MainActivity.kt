@@ -32,18 +32,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        try {
+            setContentView(R.layout.activity_main)
 
-        tvStatus = findViewById(R.id.tvStatus)
-        tvConsole = findViewById(R.id.tvConsole)
-        spinnerVehicleGroup = findViewById(R.id.spinnerVehicleGroup)
-        spinnerCarBrand = findViewById(R.id.spinnerCarBrand)
-        spinnerProtocol = findViewById(R.id.spinnerProtocol)
+            tvStatus = findViewById(R.id.tvStatus)
+            tvConsole = findViewById(R.id.tvConsole)
+            spinnerVehicleGroup = findViewById(R.id.spinnerVehicleGroup)
+            spinnerCarBrand = findViewById(R.id.spinnerCarBrand)
+            spinnerProtocol = findViewById(R.id.spinnerProtocol)
 
-        checkBluetoothPermissions()
-        setupVehicleGroups()
-        setupProtocols()
+            setupVehicleGroups()
+            setupProtocols()
+            setupButtons()
+            checkBluetoothPermissions()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
 
+    private fun setupButtons() {
         findViewById<Button>(R.id.btnConnectMulti).setOnClickListener {
             hardwareMode = "MULTI"
             log("กำลังเชื่อมต่อ Multidiag Pro VCI (รองรับระบบ 12V และ 24V)...")
@@ -57,8 +64,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnAutoScan).setOnClickListener {
-            val group = spinnerVehicleGroup.selectedItem.toString()
-            val brand = spinnerCarBrand.selectedItem.toString()
+            val group = spinnerVehicleGroup.selectedItem?.toString() ?: ""
+            val brand = spinnerCarBrand.selectedItem?.toString() ?: ""
             log("=== สแกนทั้งคัน: [$group] -> $brand ===")
             when {
                 group.contains("รถบรรทุก") -> {
@@ -81,8 +88,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnLiveData).setOnClickListener {
-            val group = spinnerVehicleGroup.selectedItem.toString()
-            val brand = spinnerCarBrand.selectedItem.toString()
+            val group = spinnerVehicleGroup.selectedItem?.toString() ?: ""
+            val brand = spinnerCarBrand.selectedItem?.toString() ?: ""
             if (group.contains("EV")) {
                 log("อ่านค่าสด EV ($brand): แรงดันแบต HV (V), กระแส (A), อุณหภูมิเซลล์, SOH (%)")
                 sendHexCommand("22 01 01")
@@ -96,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnReadDtc).setOnClickListener {
-            val group = spinnerVehicleGroup.selectedItem.toString()
+            val group = spinnerVehicleGroup.selectedItem?.toString() ?: ""
             if (group.contains("รถบรรทุก") || group.contains("แบคโฮ")) {
                 log("อ่านโค้ดเสีย J1939 (DM1 Active Faults / SPN-FMI)...")
                 sendHexCommand("18 FE CA 00")
@@ -107,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnClearDtc).setOnClickListener {
-            val group = spinnerVehicleGroup.selectedItem.toString()
+            val group = spinnerVehicleGroup.selectedItem?.toString() ?: ""
             if (group.contains("รถบรรทุก") || group.contains("แบคโฮ")) {
                 log("ลบโค้ดเสียรถบรรทุก/เครื่องจักร (J1939 DM11)...")
                 sendHexCommand("18 FE CC 00")
@@ -145,14 +152,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupVehicleGroups() {
         val groups = arrayOf(
-            "1. รถกระบะ & รถเก๋ง ไทย-ญี่ปุ่น (Toyota, Isuzu, Mitsubishi, Honda, Nissan)",
-            "2. รถยุโรป & อเมริกา (Benz, BMW, VW, Audi, Ford, Chevrolet, Volvo)",
-            "3. รถจีน (BYD, MG, GWM Haval/Tank, Neta, Chery, Wuling)",
-            "4. รถยนต์ไฟฟ้า 100% & ไฮบริด (EV / PHEV / HEV)",
-            "5. รถบรรทุกหนัก 10 ล้อ / หัวลาก 24V (Hino, Isuzu F-Series, Fuso, UD, Scania, Volvo)",
-            "6. รถแบคโฮ & เครื่องจักรกลหนัก (Komatsu, Kobelco, CAT, Hitachi, Kubota, Sany)"
+            "1. รถกระบะ & รถเก๋ง ไทย-ญี่ปุ่น",
+            "2. รถยุโรป & อเมริกา",
+            "3. รถจีน (BYD, MG, GWM, Neta, Chery)",
+            "4. รถยนต์ไฟฟ้า 100% & ไฮบริด (EV)",
+            "5. รถบรรทุกหนัก 10 ล้อ / หัวลาก 24V",
+            "6. รถแบคโฮ & เครื่องจักรกลหนัก"
         )
-        spinnerVehicleGroup.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, groups)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, groups)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerVehicleGroup.adapter = adapter
         spinnerVehicleGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 updateBrandListByGroup(pos)
@@ -163,32 +172,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateBrandListByGroup(groupIndex: Int) {
         val brands = when (groupIndex) {
-            0 -> arrayOf("Toyota (Vigo / Revo / Fortuner / Altis / Camry)", "Isuzu (D-Max / MU-X / 4JH1 / 4JJ1 / 1.9)", "Mitsubishi (Triton / Pajero / 4D56 / 4N15)", "Honda / Nissan / Mazda / Suzuki")
-            1 -> arrayOf("Mercedes-Benz / BMW / MINI", "Ford (Ranger / Everest / Next-Gen CAN-FD)", "Chevrolet (Colorado / Trailblazer / Captiva)", "Volkswagen / Audi / Volvo / Porsche")
-            2 -> arrayOf("BYD (Atto 3 / Dolphin / Seal / M6)", "MG (MG4 / EP / ZS EV / MG5 / Extender)", "GWM (Haval H6 / Jolion / Ora Good Cat / Tank 300)", "Neta (V / X) / Chery / Omoda / Changan Deepal")
-            3 -> arrayOf("EV จีน (BYD / MG / Neta / ORA / Deepal / Aion)", "EV ยุโรป-อเมริกา (Tesla Model 3/Y / BMW i / Benz EQ)", "Hybrid ญี่ปุ่น (Toyota Hybrid / Honda e:HEV / Nissan e-POWER)")
-            4 -> arrayOf("Hino (500 Victor / Dominator / 700 Profia - J1939)", "Isuzu Truck (Deca FXZ / GXZ / FRR / NPR - 24V)", "Mitsubishi Fuso (Fighter / Super Great)", "UD Trucks (Quester) / Scania / Volvo Truck / Sinotruk")
-            else -> arrayOf("Komatsu (PC200-8 / PC200-10 / PC130)", "Kobelco (SK200-8 / SK200-10 / SK140)", "Caterpillar CAT (320D / 320GC / 336)", "Hitachi (ZX200-3 / ZX200-5G) / Kubota / Sany / XCMG")
+            0 -> arrayOf("Toyota (Vigo / Revo / Fortuner / Altis)", "Isuzu (D-Max / MU-X / 4JH1 / 4JJ1 / 1.9)", "Mitsubishi (Triton / Pajero / 4D56 / 4N15)", "Honda / Nissan / Mazda / Suzuki")
+            1 -> arrayOf("Mercedes-Benz / BMW / MINI", "Ford (Ranger / Everest / Next-Gen)", "Chevrolet (Colorado / Trailblazer)", "Volkswagen / Audi / Volvo")
+            2 -> arrayOf("BYD (Atto 3 / Dolphin / Seal)", "MG (MG4 / EP / ZS EV / Extender)", "GWM (Haval H6 / Ora Good Cat / Tank)", "Neta / Chery / Omoda / Deepal")
+            3 -> arrayOf("EV จีน (BYD / MG / Neta / ORA / Deepal)", "EV ยุโรป-อเมริกา (Tesla / BMW i / Benz EQ)", "Hybrid ญี่ปุ่น (Toyota / Honda e:HEV)")
+            4 -> arrayOf("Hino (500 Victor / Dominator / 700 - J1939)", "Isuzu Truck (Deca FXZ / GXZ / FRR - 24V)", "Mitsubishi Fuso (Fighter / Super Great)", "UD Trucks / Scania / Volvo Truck")
+            else -> arrayOf("Komatsu (PC200-8 / PC200-10)", "Kobelco (SK200-8 / SK200-10)", "Caterpillar CAT (320D / 320GC)", "Hitachi / Kubota / Sany / XCMG")
         }
-        spinnerCarBrand.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, brands)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, brands)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCarBrand.adapter = adapter
     }
 
     private fun setupProtocols() {
         val protocols = arrayOf(
-            "0. ค้นหาโปรโตคอลอัตโนมัติ (Auto Detect - AT SP 0)",
-            "1. ISO 15765-4 CAN 11-bit 500k (รถเก๋ง/กระบะมาตรฐาน)",
-            "2. ISO 15765-4 CAN 29-bit 500k (Honda / ยุโรป / EV)",
-            "3. ISO 15765-4 CAN 29-bit 250k (รถบรรทุก / เครื่องจักร)",
-            "4. SAE J1939 CAN 250k/500k (รถบรรทุกหนัก / รถแบคโฮ 24V)",
-            "5. SAE J1708 / J1587 (รถบรรทุกและเครื่องจักรกลรุ่นเก่า)",
-            "6. ISO 14230-4 KWP2000 Fast Init (Vigo / D-Max / Triton รุ่นแรก)",
-            "7. ISO 14230-4 KWP2000 5-Baud Init (รถญี่ปุ่นปี 2000-2006)",
-            "8. ISO 9141-2 K-Line (Toyota / Mitsubishi / Isuzu ยุคแรก)",
-            "9. CAN-FD (รถรุ่นใหม่ปี 2022+ เช่น Ford Next-Gen / EV รุ่นใหม่)",
-            "10. SAE J1850 PWM / VPW (Ford / GM / Chevrolet รุ่นเก่า)",
-            "11. Multidiag Pro Direct Relay (สับรีเลย์เข้า ABS/SRS/ไฮดรอลิก)"
+            "0. ค้นหาโปรโตคอลอัตโนมัติ (Auto Detect)",
+            "1. ISO 15765-4 CAN 11-bit 500k",
+            "2. ISO 15765-4 CAN 29-bit 500k",
+            "3. ISO 15765-4 CAN 29-bit 250k",
+            "4. SAE J1939 CAN 24V (รถบรรทุก/แบคโฮ)",
+            "5. SAE J1708 / J1587 (รถใหญ่รุ่นเก่า)",
+            "6. ISO 14230-4 KWP2000 Fast Init",
+            "7. ISO 14230-4 KWP2000 5-Baud Init",
+            "8. ISO 9141-2 K-Line (รถญี่ปุ่นยุคแรก)",
+            "9. CAN-FD (รถใหม่ปี 2022+ / EV)",
+            "10. SAE J1850 PWM / VPW (Ford/GM เก่า)",
+            "11. Multidiag Pro Direct Relay (สับรีเลย์)"
         )
-        spinnerProtocol.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, protocols)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, protocols)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerProtocol.adapter = adapter
         spinnerProtocol.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
                 if (outStream != null) {
@@ -207,13 +220,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLearningCombinedDialog() {
         val options = arrayOf(
-            "1. เลินนิ่งหัวฉีด (Pilot / Small Injection Learning)",
-            "2. รีเซ็ตค่าเรียนรู้ซัพพลายปั๊ม (Supply Pump Learn Reset)",
-            "3. สั่งเรียนรู้วาล์ว SCV ใหม่ (SCV Valve Initialization)",
-            "4. คาลิเบรตปั๊มไฮดรอลิก & คันเร่งไฟฟ้า (รถแบคโฮ Excavator)"
+            "1. เลินนิ่งหัวฉีด (Pilot Injection Learning)",
+            "2. รีเซ็ตค่าเรียนรู้ซัพพลายปั๊ม (Supply Pump Reset)",
+            "3. สั่งเรียนรู้วาล์ว SCV ใหม่ (SCV Valve Init)",
+            "4. คาลิเบรตปั๊มไฮดรอลิก & คันเร่ง (รถแบคโฮ)"
         )
         AlertDialog.Builder(this)
-            .setTitle("ฟังก์ชันเลินนิ่งหัวฉีด / ซัพพลายปั๊ม / ไฮดรอลิก")
+            .setTitle("ฟังก์ชันเลินนิ่งหัวฉีด / ซัพพลายปั๊ม")
             .setItems(options) { _, which ->
                 log("=== สั่งงาน: ${options[which]} ===")
                 sendHexCommand("30 1${which + 3} 01")
@@ -222,12 +235,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun showDpfAndAdblueDialog() {
         val options = arrayOf(
-            "1. สั่งเผาเขม่ากรองไอเสีย (DPF Stationary Regeneration)",
-            "2. รีเซ็ตค่าเถ้าเขม่า DPF หลังล้างท่อ (DPF Ash Reset)",
-            "3. รีเซ็ตระบบน้ำยาไอเสีย AdBlue / SCR / DEF (รถบรรทุก & ดีเซลรุ่นใหม่)"
+            "1. สั่งเผาเขม่ากรองไอเสีย (DPF Regeneration)",
+            "2. รีเซ็ตค่าเถ้าเขม่า DPF หลังล้างท่อ",
+            "3. รีเซ็ตระบบน้ำยาไอเสีย AdBlue / SCR"
         )
         AlertDialog.Builder(this)
-            .setTitle("ระบบไอเสีย DPF & AdBlue / SCR")
+            .setTitle("ระบบไอเสีย DPF & AdBlue")
             .setItems(options) { _, which ->
                 log("=== สั่งงาน: ${options[which]} ===")
                 sendHexCommand("31 01 05 0${which + 1}")
@@ -236,16 +249,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun showEvAndBmsDialog() {
         val options = arrayOf(
-            "1. เช็กความสมดุลเซลล์แบตเตอรี่แรงสูง (EV HV Battery Cell Balance)",
-            "2. ปรับเทียบระดับพลังงานแบต EV (EV Battery SOH / SOC Calibration)",
-            "3. ตั้งค่าแบตเตอรี่ 12V ลูกใหม่ (12V BMS Battery Registration)"
+            "1. เช็กความสมดุลเซลล์แบตเตอรี่ EV (HV Cell Balance)",
+            "2. ปรับเทียบระดับพลังงานแบต EV (SOH/SOC)",
+            "3. ตั้งค่าแบตเตอรี่ 12V ลูกใหม่ (BMS Registration)"
         )
         AlertDialog.Builder(this)
-            .setTitle("ระบบแบตเตอรี่ EV แรงสูง & แบตเตอรี่ 12V")
+            .setTitle("ระบบแบตเตอรี่ EV & แบตเตอรี่ 12V")
             .setItems(options) { _, which ->
-                if (which == 2) {
-                    show12VBatteryInput()
-                } else {
+                if (which == 2) show12VBatteryInput() else {
                     log("=== สั่งงาน EV: ${options[which]} ===")
                     sendHexCommand("31 01 E${which + 1} 00")
                 }
@@ -254,7 +265,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun show12VBatteryInput() {
         val inputAh = EditText(this).apply {
-            hint = "ระบุความจุแอมป์แบตเตอรี่ 12V (เช่น 65, 75, 80, 100 Ah)"
+            hint = "ระบุความจุแอมป์ (เช่น 65, 75, 80, 100 Ah)"
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
         }
         AlertDialog.Builder(this)
@@ -273,7 +284,7 @@ class MainActivity : AppCompatActivity() {
         val options = arrayOf(
             "1. คลายเบรกมือไฟฟ้า (Open EPB - เปลี่ยนผ้าเบรก)",
             "2. ปิดมอเตอร์เบรกมือไฟฟ้า (Close EPB)",
-            "3. ไล่ลมเบรก ABS อัตโนมัติ (ABS Automated Bleeding)"
+            "3. ไล่ลมเบรก ABS อัตโนมัติ (ABS Bleeding)"
         )
         AlertDialog.Builder(this)
             .setTitle("บริการเบรกมือไฟฟ้า EPB & ไล่ลม ABS")
@@ -287,12 +298,12 @@ class MainActivity : AppCompatActivity() {
         val options = arrayOf(
             "1. รีเซ็ตเซ็นเซอร์มุมพวงมาลัย 0 องศา (SAS Reset)",
             "2. รีเซ็ตลิ้นปีกผีเสื้อไฟฟ้า (Throttle Adaptation)",
-            "3. รีเซ็ตค่าเรียนรู้เกียร์ออโต้ (AT / CVT / AMT Gearbox Reset)",
-            "4. รีเซ็ตไฟเตือนถ่ายน้ำมันเครื่อง (Oil Maintenance Reset)",
-            "5. รีเซ็ตระบบแอร์ & มอเตอร์ประตูทิศทางลม (A/C Flap Calibration)"
+            "3. รีเซ็ตค่าเรียนรู้เกียร์ออโต้ (AT / CVT Reset)",
+            "4. รีเซ็ตไฟเตือนถ่ายน้ำมันเครื่อง (Oil Reset)",
+            "5. รีเซ็ตระบบแอร์ & มอเตอร์ทิศทางลม"
         )
         AlertDialog.Builder(this)
-            .setTitle("ฟังก์ชันรีเซ็ตค่ามาตรฐาน (Service Resets)")
+            .setTitle("ฟังก์ชันรีเซ็ตค่ามาตรฐาน")
             .setItems(options) { _, which ->
                 log("=== สั่งงาน: ${options[which]} ===")
                 sendHexCommand("31 01 0B 0${which + 1}")
@@ -302,11 +313,11 @@ class MainActivity : AppCompatActivity() {
     private fun showInjectorCutDialog() {
         val cylinders = arrayOf(
             "ตัดหัวฉีด สูบ 1", "ตัดหัวฉีด สูบ 2", "ตัดหัวฉีด สูบ 3",
-            "ตัดหัวฉีด สูบ 4", "ตัดหัวฉีด สูบ 5 (รถบรรทุก 6 สูบ)", "ตัดหัวฉีด สูบ 6 (รถบรรทุก 6 สูบ)",
+            "ตัดหัวฉีด สูบ 4", "ตัดหัวฉีด สูบ 5", "ตัดหัวฉีด สูบ 6",
             "ยกเลิกการตัด (ทำงานครบทุกสูบ)"
         )
         AlertDialog.Builder(this)
-            .setTitle("Active Test: ตัดการทำงานหัวฉีด (1-6 สูบ)")
+            .setTitle("Active Test: ตัดการทำงานหัวฉีด")
             .setItems(cylinders) { _, which ->
                 val code = when (which) {
                     0 -> "01"; 1 -> "02"; 2 -> "04"; 3 -> "08"; 4 -> "10"; 5 -> "20"; else -> "00"
@@ -327,7 +338,7 @@ class MainActivity : AppCompatActivity() {
         layout.addView(inputCode)
 
         AlertDialog.Builder(this)
-            .setTitle("ลงทะเบียนรหัสหัวฉีด (Injector ID Coding)")
+            .setTitle("ลงทะเบียนรหัสหัวฉีด (Injector ID)")
             .setView(layout)
             .setPositiveButton("เขียนรหัสลงกล่อง") { _, _ ->
                 val cyl = inputCyl.text.toString()
@@ -340,43 +351,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun connectVci(keyword: String) {
-        val btAdapter = BluetoothAdapter.getDefaultAdapter()
-        if (btAdapter == null || !btAdapter.isEnabled) {
-            Toast.makeText(this, "กรุณาเปิด Bluetooth ที่แท็บเล็ตก่อน", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            return
-        }
-
-        val device: BluetoothDevice? = btAdapter.bondedDevices?.firstOrNull {
-            it.name.contains(keyword, true) || it.name.contains("Autocom", true) ||
-            it.name.contains("Delphi", true) || it.name.contains("OBD", true)
-        }
-
-        if (device == null) {
-            log("ไม่พบอุปกรณ์ที่จับคู่ไว้ กรุณาจับคู่ Bluetooth ในตั้งค่าแท็บเล็ตก่อน")
-            return
-        }
-
-        Thread {
-            try {
-                btSocket = device.createRfcommSocketToServiceRecord(sppUuid)
-                btSocket?.connect()
-                outStream = btSocket?.outputStream
-                inStream = btSocket?.inputStream
-
-                runOnUiThread {
-                    tvStatus.text = "เชื่อมต่อแล้ว: ${device.name} [$hardwareMode]"
-                    log("เชื่อมต่อ ${device.name} สำเร็จ! พร้อมใช้งานทุกโปรโตคอล 12V/24V/EV")
-                }
-                listenIncomingData()
-            } catch (e: Exception) {
-                runOnUiThread { log("เชื่อมต่อไม่สำเร็จ: ${e.message}") }
+        try {
+            val btAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (btAdapter == null || !btAdapter.isEnabled) {
+                Toast.makeText(this, "กรุณาเปิด Bluetooth ที่แท็บเล็ตก่อน", Toast.LENGTH_SHORT).show()
+                return
             }
-        }.start()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                checkBluetoothPermissions()
+                return
+            }
+
+            val device: BluetoothDevice? = btAdapter.bondedDevices?.firstOrNull {
+                it.name.contains(keyword, true) || it.name.contains("Autocom", true) ||
+                it.name.contains("Delphi", true) || it.name.contains("OBD", true)
+            }
+
+            if (device == null) {
+                log("ไม่พบอุปกรณ์ที่จับคู่ไว้ กรุณาจับคู่ Bluetooth ในตั้งค่าแท็บเล็ตก่อน")
+                return
+            }
+
+            Thread {
+                try {
+                    btSocket = device.createRfcommSocketToServiceRecord(sppUuid)
+                    btSocket?.connect()
+                    outStream = btSocket?.outputStream
+                    inStream = btSocket?.inputStream
+
+                    runOnUiThread {
+                        tvStatus.text = "เชื่อมต่อแล้ว: ${device.name} [$hardwareMode]"
+                        log("เชื่อมต่อ ${device.name} สำเร็จ! พร้อมใช้งานทุกโปรโตคอล")
+                    }
+                    listenIncomingData()
+                } catch (e: Exception) {
+                    runOnUiThread { log("เชื่อมต่อไม่สำเร็จ: ${e.message}") }
+                }
+            }.start()
+        } catch (e: Exception) {
+            log("ข้อผิดพลาด Bluetooth: ${e.message}")
+        }
     }
 
     private fun sendHexCommand(hex: String) {
@@ -387,7 +403,7 @@ class MainActivity : AppCompatActivity() {
                 outStream?.flush()
                 runOnUiThread { log("TX -> $hex") }
             } catch (e: Exception) {
-                runOnUiThread { log("โหมดทดสอบ (TX -> $hex)") }
+                runOnUiThread { log("โหมดทดสอบหน้าจอ (TX -> $hex)") }
             }
         }.start()
     }
@@ -412,12 +428,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkBluetoothPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
-                100
-            )
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.BLUETOOTH_CONNECT,
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ),
+                    100
+                )
+            }
+        } catch (e: Exception) {
+            log("แจ้งเตือนสิทธิ์: ${e.message}")
         }
     }
 }
