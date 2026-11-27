@@ -266,7 +266,8 @@ class MainActivity : AppCompatActivity() {
                     }
                     val fullQuery = Uri.encode("$carQuery $keyword")
                     log("ค้นหาคู่มือซ่อม (ไม่ต้องต่อ VCI): $carQuery -> $keyword")
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=$fullQuery)))
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=$fullQuery")))
+
                 }
             }
             .show()
@@ -769,8 +770,10 @@ class MainActivity : AppCompatActivity() {
             val vinMatch = Regex("[A-HJ-NPR-Z0-9]{17}").find(vinAscii)
             if (vinMatch != null) {
                 val vin = vinMatch.value
+                val modelYear = decodeYearFromVin(vin[9])               
                 val brandName = decodeBrandFromVin(vin)
-                val modelYear = decodeYearFromVin(vin)
+
+
                 lastDetectedVin = vin
                 lastDetectedCar = "$brandName (ปี $modelYear)"
                 tvStatus.text = "รถ: $lastDetectedCar\nVIN: $vin"
