@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A"
-    android:padding="16dp">
+    android:padding="14dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,33 +13,34 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DACH SCANNER (OE-Level Diagnostics)"
+            android:text="DACH SCANNER ULTRA (Car • Truck • Excavator • EV)"
             android:textColor="#38BDF8"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:background="#1E293B"
-            android:padding="12dp"
-            android:text="สถานะ: ยังไม่ได้เชื่อมต่อ | พร้อมใช้งาน Multidiag Pro &amp; KONNWEI"
-            android:textColor="#F8FAFC" />
+            android:padding="10dp"
+            android:text="สถานะ: รอเชื่อมต่อ | รองรับระบบไฟ 12V &amp; 24V (Multidiag Pro / KONNWEI)"
+            android:textColor="#F8FAFC"
+            android:textSize="13sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="1. เชื่อมต่อหัวอ่าน VCI"
+            android:layout_marginTop="12dp"
+            android:text="1. เชื่อมต่อหัวอ่าน VCI &amp; เลือกกลุ่มยานพาหนะ"
             android:textColor="#94A3B8"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <Button
@@ -49,8 +50,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#2563EB"
-                android:text="เชื่อม Multidiag Pro"
-                android:textColor="#FFFFFF" />
+                android:text="เชื่อม Multidiag Pro (12V/24V)"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
 
             <Button
                 android:id="@+id/btnConnectKonnwei"
@@ -59,30 +61,44 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#0D9488"
-                android:text="เชื่อม KONNWEI"
-                android:textColor="#FFFFFF" />
+                android:text="เชื่อม KONNWEI / ELM327"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
         </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spinnerVehicleGroup"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="6dp"
+            android:background="#1E293B" />
 
         <Spinner
             android:id="@+id/spinnerCarBrand"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:background="#1E293B"
-            android:padding="8dp" />
+            android:layout_height="44dp"
+            android:layout_marginTop="6dp"
+            android:background="#1E293B" />
+
+        <Spinner
+            android:id="@+id/spinnerProtocol"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="6dp"
+            android:background="#1E293B" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="2. วินิจฉัยเชิงลึก (Autel All-System Scan)"
+            android:layout_marginTop="12dp"
+            android:text="2. วินิจฉัยทั้งคัน &amp; อ่าน/ลบโค้ด (All-System Diagnostics)"
             android:textColor="#94A3B8"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <Button
@@ -92,8 +108,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#16A34A"
-                android:text="สแกนทั้งคัน (7 ระบบ)"
-                android:textColor="#FFFFFF" />
+                android:text="สแกนทั้งคัน (Auto Scan)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnLiveData"
@@ -102,14 +119,15 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#0284C7"
-                android:text="ดูค่าสด &amp; ชดเชยหัวฉีด"
-                android:textColor="#FFFFFF" />
+                android:text="ดูค่าสด / แรงดันแบต EV"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <Button
@@ -119,8 +137,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#EA580C"
-                android:text="อ่านโค้ดเสีย (DTC)"
-                android:textColor="#FFFFFF" />
+                android:text="อ่านโค้ดเสีย (DTC/DM1)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnClearDtc"
@@ -129,22 +148,23 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#DC2626"
-                android:text="ลบโค้ดไฟโชว์ (CLEAR)"
-                android:textColor="#FFFFFF" />
+                android:text="ลบโค้ดไฟโชว์ (CLEAR/DM11)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="3. ฟังก์ชันพิเศษ (Active Test &amp; Service Reset)"
+            android:layout_marginTop="12dp"
+            android:text="3. สั่งทำงานอุปกรณ์ (Bi-Directional Active Test)"
             android:textColor="#94A3B8"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <Button
@@ -154,8 +174,9 @@
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#7C3AED"
-                android:text="ตัดหัวฉีด (สูบ 1-4)"
-                android:textColor="#FFFFFF" />
+                android:text="ตัดหัวฉีด (สูบ 1-6)"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/btnActuator"
@@ -164,14 +185,23 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="#7C3AED"
-                android:text="เทส EGR / SCV / พัดลม"
-                android:textColor="#FFFFFF" />
+                android:text="เทส EGR / SCV / โซลินอยด์"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="4. ฟังก์ชันพิเศษครบชุด (Autel &amp; Heavy-Duty Service)"
+            android:textColor="#FBBF24"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <Button
@@ -182,29 +212,89 @@
                 android:layout_weight="1"
                 android:backgroundTint="#D97706"
                 android:text="ลงทะเบียนหัวฉีด (ID)"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
 
             <Button
-                android:id="@+id/btnLearningReset"
+                android:id="@+id/btnSmallQtyLearn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
-                android:backgroundTint="#B91C1C"
-                android:text="รีเซ็ตค่าเรียนรู้ปั๊ม"
-                android:textColor="#FFFFFF" />
+                android:backgroundTint="#B45309"
+                android:text="เลินนิ่งหัวฉีด / ซัพพลายปั๊ม"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnDpfRegen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#991B1B"
+                android:text="เผาเขม่า DPF / รีเซ็ต AdBlue"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnEvBattery"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#059669"
+                android:text="เช็กแบต EV / ตั้งค่า BMS 12V"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnEpbService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#4F46E5"
+                android:text="เบรกมือ EPB / ไล่ลม ABS"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnSasThrottleReset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#0E7490"
+                android:text="รีเซ็ต SAS / ลิ้นปีก / เกียร์ / น้ำมัน"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvConsole"
             android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:layout_marginTop="14dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="12dp"
             android:background="#020617"
             android:padding="10dp"
-            android:text="> Dach Scanner v1.0 พร้อมทำงาน..."
+            android:text="> Dach Scanner Ultra พร้อมสแกนรถทุกชนิด (12V / 24V / EV)..."
             android:textColor="#4ADE80"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>
