@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://android.com"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F172A"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DACH SCANNER (OE-Level Diagnostics)"
+            android:textColor="#38BDF8"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#1E293B"
+            android:padding="12dp"
+            android:text="สถานะ: ยังไม่ได้เชื่อมต่อ | พร้อมใช้งาน Multidiag Pro &amp; KONNWEI"
+            android:textColor="#F8FAFC" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="1. เชื่อมต่อหัวอ่าน VCI"
+            android:textColor="#94A3B8"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnConnectMulti"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#2563EB"
+                android:text="เชื่อม Multidiag Pro"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnConnectKonnwei"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#0D9488"
+                android:text="เชื่อม KONNWEI"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/spinnerCarBrand"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:background="#1E293B"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="2. วินิจฉัยเชิงลึก (Autel All-System Scan)"
+            android:textColor="#94A3B8"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAutoScan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#16A34A"
+                android:text="สแกนทั้งคัน (7 ระบบ)"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnLiveData"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#0284C7"
+                android:text="ดูค่าสด &amp; ชดเชยหัวฉีด"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnReadDtc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#EA580C"
+                android:text="อ่านโค้ดเสีย (DTC)"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnClearDtc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#DC2626"
+                android:text="ลบโค้ดไฟโชว์ (CLEAR)"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="3. ฟังก์ชันพิเศษ (Active Test &amp; Service Reset)"
+            android:textColor="#94A3B8"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnInjectorCut"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#7C3AED"
+                android:text="ตัดหัวฉีด (สูบ 1-4)"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnActuator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#7C3AED"
+                android:text="เทส EGR / SCV / พัดลม"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnInjectorCoding"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#D97706"
+                android:text="ลงทะเบียนหัวฉีด (ID)"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnLearningReset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:backgroundTint="#B91C1C"
+                android:text="รีเซ็ตค่าเรียนรู้ปั๊ม"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvConsole"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="14dp"
+            android:background="#020617"
+            android:padding="10dp"
+            android:text="> Dach Scanner v1.0 พร้อมทำงาน..."
+            android:textColor="#4ADE80"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+</ScrollView>
